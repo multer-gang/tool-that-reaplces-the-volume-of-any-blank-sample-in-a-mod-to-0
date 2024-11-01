@@ -69,6 +69,7 @@ error_happeneded:
 
 int main(int argc, char** argv)
 {
+	FILE* f = NULL;
 	char* file_buf = NULL;
 	size_t i = 0;
 	if (argc < 2)
