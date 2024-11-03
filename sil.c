@@ -5,21 +5,31 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static size_t file_size = 0;
 
-void silence_blank_sample(char* header)
+static void silence_blank_sample(char header[30])
 {
+	char message[22] = { 0 };
 	size_t length = 0;
 	if (header == NULL)
 		return;
 
 	length = (header[23] | (header[22] << 8));
-	if (length == 0)
+	if (length == 0) {
+		if (header[0] != 0 && header[0] != '#') {
+			strncpy(message, header, 19);	/* we'll turn it into a message... */
+			memmove(message + 1, message, 19);
+			message[0] = '#'; /* this is apparently comment notation in MOD */
+			memmove(header, message, 20);
+			header[21] = 0;
+		}
 		header[25] = 0;
+	}
 }
 
-char* read_file_into_buffer(char* filename)
+static char* read_file_into_buffer(char* filename)
 {
 	FILE* f = NULL;
 	char* file_buf = NULL;
